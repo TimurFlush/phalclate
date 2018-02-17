@@ -194,11 +194,16 @@ abstract class Adapter
     public function _(string $text, string $from = null, array $placeholders = [], string $group = null)
     {
         $options = $this->getOptions();
+
         if (!isset($from) OR $from === '')
             $from = $options['default_language'];
+
         if (!isset($to) OR $to === '')
             $to = $options['current_language'];
-        if ($from === $to OR $text === '') return $text;
+
+        if ($from === $to OR $text === '') return Helper::replacePlaceholders($text, $placeholders);
+
+
         $config = Helper::getConfig('Config');
         $cache = $this->getCache($from, $to);
         if ($group === null) {
