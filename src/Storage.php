@@ -5,58 +5,74 @@ namespace TimurFlush\Phalclate;
 /**
  * Class Storage
  * @package TimurFlush\Phalclate
+ * @author Timur Flush
+ * @version 1.0.1
+ *
+ * @property array $_pool
  */
 class Storage implements StorageInterface
 {
     /**
+     * Memory storage.
+     *
      * @var array = []
      */
-    private $_pool = [];
+    private $_cache = [];
 
     /**
+     * Push data to memory storage.
+     *
      * @param $key
      * @param $value
      */
     public function save($key, $value) : void
     {
-        $this->_pool[$key] = $value;
+        $this->_cache[$key] = $value;
     }
 
     /**
+     * Get data from memory storage.
+     *
      * @param null $key
      * @return mixed
      */
     public function get($key = null)
     {
         if ($key === null)
-            return $this->_pool;
+            return $this->_cache;
 
-        return $this->_pool[$key] ?? null;
+        return $this->_cache[$key] ?? null;
     }
 
     /**
+     * Checks for existence of data in memory storage.
+     *
      * @param $key
      * @return bool
      */
     public function exists($key) : bool
     {
-        return isset($this->_pool[$key]);
+        return isset($this->_cache[$key]);
     }
 
     /**
+     * Removes data from memory storage.
+     *
      * @param $key
      * @return void
      */
     public function remove($key): void
     {
-        unset($this->_pool[$key]);
+        unset($this->_cache[$key]);
     }
 
     /**
+     * Clears memory storage.
+     *
      * @return void
      */
     public function flush(): void
     {
-        $this->_pool = [];
+        $this->_cache = [];
     }
 }
