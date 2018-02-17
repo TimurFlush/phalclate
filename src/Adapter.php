@@ -1,8 +1,16 @@
 <?php
+
 namespace TimurFlush\Phalclate;
+
 /**
  * Class Adapter
  * @package TimurFlush
+ * @author Timur Flush
+ *
+ * @property array $_options Options.
+ * @property \Phalcon\Cache\BackendInterface $_backendCache Backend cacher.
+ * @property StorageInterface $_storage Storage.
+ * @property string $_defaultGroup Default group.
  */
 abstract class Adapter
 {
@@ -24,6 +32,7 @@ abstract class Adapter
      * @var string
      */
     protected $_defaultGroup = 'default';
+
     /**
      * Adapter constructor.
      * @param array $options
@@ -42,10 +51,13 @@ abstract class Adapter
         $this->setStorage(new Storage());
         $this->setOptions($options);
     }
+
     /**
-     * @param string|null $from
-     * @param string|null $to
-     * @param string $group
+     * Deletes the group.
+     *
+     * @param string|null $from Original language.
+     * @param string|null $to Target language.
+     * @param string $group The group of translation.
      * @return bool
      */
     public function removeGroup(string $from = null, string $to = null, string $group)
@@ -59,11 +71,14 @@ abstract class Adapter
             $group => Operations::DELETE
         ]);
     }
+
     /**
-     * @param string|null $from
-     * @param string|null $to
-     * @param string|null $group
-     * @param string $text
+     * Removes the translation from the group.
+     *
+     * @param string|null $from Original language.
+     * @param string|null $to Target language.
+     * @param string|null $group The group of translation.
+     * @param string|array $text Text or an array of texts to be deleted.
      * @return bool
      */
     public function removeTranslate(string $from = null, string $to = null, string $group = null, $text)
@@ -91,10 +106,13 @@ abstract class Adapter
         }
         return false;
     }
+
     /**
-     * @param string|null $from
-     * @param string|null $to
-     * @param null $group
+     * Returns the translation cache.
+     *
+     * @param string|null $from Original language.
+     * @param string|null $to Target language.
+     * @param null $group The group of translation.
      * @return mixed|null|\stdClass
      */
     public function getCache(string $from = null, string $to = null, $group = null)
@@ -124,12 +142,15 @@ abstract class Adapter
         }
         return $cache;
     }
+
     /**
-     * @param string|null $from
-     * @param string|null $to
-     * @param array $data
-     * @param bool $onlyReplace
-     * @param string|null $group
+     * Saves data to the translation cache.
+     *
+     * @param string|null $from Original language.
+     * @param string|null $to Target language.
+     * @param array $data Data for save.
+     * @param bool $onlyReplace Only replace.
+     * @param string|null $group The group of translation.
      * @return bool
      */
     public function saveCache(string $from = null, string $to = null, array $data, $onlyReplace = false, string $group = null)
@@ -184,11 +205,14 @@ abstract class Adapter
         $this->getStorage()->save($filename, $cache);
         return $this->getBackendCache()->save($filename, $cache);
     }
+
     /**
-     * @param string $text
-     * @param string|null $from
-     * @param array $placeholders
-     * @param string|null $group
+     * Translates text and writes it to the translation cache.
+     *
+     * @param string $text Text for translate.
+     * @param string|null $from Original language.
+     * @param array $placeholders Placeholders.
+     * @param string|null $group The group of translation.
      * @return string
      */
     public function _(string $text, string $from = null, array $placeholders = [], string $group = null)
@@ -215,26 +239,7 @@ abstract class Adapter
                 return Helper::replacePlaceholders($cache->{$group}->{$text}, $placeholders);
             }
         }
-        /*$translatedText = '';
-        foreach($config->translators as $translatorClass)
-        {
-            $translatorObject = new $translatorClass($this->getOptions());
-            $map = preg_split('/%(.*?)%/', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-            foreach ($map as $chunk){
-                if (isset($placeholders[$chunk])){
-                    $translatedText .= '%' . $chunk . '%';
-                    continue;
-                }
-                $translated = $translatorObject->translate($from, $to, $chunk);
-                if (is_string($translated)){
-                    $translatedText .= $translated;
-                }else{
-                    return '';
-                }
-            }
-            if ($translatedText === null) continue;
-        }*/
-        /**  BEGIN **/
+
         $translatedText = '';
         $map = preg_split('/%(.*?)%/', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
         foreach($map as $chunk){
@@ -253,8 +258,10 @@ abstract class Adapter
                 }
             }
         }
-        /**  END  **/
-        if ($translatedText === '') return '';
+
+        if ($translatedText === '')
+            return '';
+
         if ($group === null){
             $this->saveCache($from, $to, [
                 $this->_defaultGroup => [
@@ -270,9 +277,12 @@ abstract class Adapter
         }
         return Helper::replacePlaceholders($translatedText, $placeholders);
     }
+
     /**
-     * @param string|null $from
-     * @param string|null $to
+     * Clears the cache.
+     *
+     * @param string|null $from Original language.
+     * @param string|null $to Target language.
      * @return bool
      */
     public final function flushCache(string $from = null, string $to = null) : bool
@@ -284,9 +294,12 @@ abstract class Adapter
             $to = $options['current_language'];
         return $this->_backendCache->delete($this->getFileName($from, $to));
     }
+
     /**
-     * @param string $from
-     * @param string $to
+     * Returns a list of all translation groups from the cache.
+     *
+     * @param string $from Original language.
+     * @param string $to The group of translation.
      * @return array
      */
     public function getGroups(string $from = null, string $to = null) : array
@@ -309,9 +322,11 @@ abstract class Adapter
     }
 
     /**
-     * @param string|null $from
-     * @param string|null $to
-     * @param string $group
+     * Returns the translation group from the cache.
+     *
+     * @param string|null $from Original language.
+     * @param string|null $to Target language.
+     * @param string $group The group of translation.
      * @return array
      */
     public function getGroup(string $from = null, string $to = null, string $group) : array
@@ -331,6 +346,7 @@ abstract class Adapter
         }
         return null;
     }
+
     /**
      * @return array
      */
@@ -338,12 +354,13 @@ abstract class Adapter
     {
         return $this->_options;
     }
+
     /**
-     * @param string|null $from
-     * @param string|null $to
+     * @param string|null $from Original language.
+     * @param string|null $to Target language.
      * @return string
      */
-    public function getFileName(string $from = null, string $to = null) : string
+    private function getFileName(string $from = null, string $to = null) : string
     {
         $options = $this->getOptions();
         if (!isset($from) OR $from === '')
@@ -353,6 +370,7 @@ abstract class Adapter
         $config = Helper::getConfig('Config');
         return Helper::replacePlaceholders($config->mask, ['from' => $from, 'to' => $to]);
     }
+
     /**
      * @param $lifetime
      * @return \Phalcon\Cache\Frontend\Json
@@ -363,6 +381,7 @@ abstract class Adapter
             'lifetime' => $lifetime
         ]);
     }
+
     /**
      * @param \Phalcon\Cache\BackendInterface $backend
      */
@@ -370,6 +389,7 @@ abstract class Adapter
     {
         $this->_backendCache = $backend;
     }
+
     /**
      * @return \Phalcon\Cache\BackendInterface
      */
@@ -377,6 +397,7 @@ abstract class Adapter
     {
         return $this->_backendCache;
     }
+
     /**
      * @param StorageInterface $storage
      */
@@ -384,6 +405,7 @@ abstract class Adapter
     {
         $this->_storage = $storage;
     }
+
     /**
      * @return StorageInterface
      */
@@ -391,6 +413,7 @@ abstract class Adapter
     {
         return $this->_storage;
     }
+
     /**
      * @param array $options
      */
