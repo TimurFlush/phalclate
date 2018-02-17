@@ -8,7 +8,7 @@ use Phalcon\Translate\Interpolator\AssociativeArray;
  * Class Helper
  * @package TimurFlush\Phalclate
  * @author Timur Flush
- * @version 
+ * @version 1.0.2
  */
 class Helper
 {
