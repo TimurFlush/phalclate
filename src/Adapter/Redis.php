@@ -8,6 +8,8 @@ use Phalcon\Cache\Backend\Redis as BackendCache;
 /**
  * Class File
  * @package TimurFlush\Adapter
+ * @author Timur Flush
+ * @version 1.0.3
  */
 class Redis extends Adapter
 {

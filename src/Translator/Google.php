@@ -7,6 +7,8 @@ use TimurFlush\Phalclate\TranslatorInterface;
 /**
  * Class Google
  * @package TimurFlush\Phalclate\Translator
+ * @author Timur Flush
+ * @version 1.0.3
  */
 class Google extends Translator implements TranslatorInterface
 {

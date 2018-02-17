@@ -8,7 +8,7 @@ use TimurFlush\Phalclate\Storage\Memory;
  * Class Adapter
  * @package TimurFlush
  * @author Timur Flush
- * @version 1.0.2
+ * @version 1.0.3
  *
  * @property array $_options Options.
  * @property \Phalcon\Cache\BackendInterface $_backendCache Backend cacher.

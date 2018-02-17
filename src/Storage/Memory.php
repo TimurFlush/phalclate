@@ -8,7 +8,7 @@ use TimurFlush\Phalclate\StorageInterface;
  * Class Memory
  * @package TimurFlush\Phalclate
  * @author Timur Flush
- * @version 1.0.1
+ * @version 1.0.3
  *
  * @property array $_pool
  */
