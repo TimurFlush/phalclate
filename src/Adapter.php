@@ -2,6 +2,8 @@
 
 namespace TimurFlush\Phalclate;
 
+use TimurFlush\Phalclate\Storage\Memory;
+
 /**
  * Class Adapter
  * @package TimurFlush
@@ -10,7 +12,7 @@ namespace TimurFlush\Phalclate;
  *
  * @property array $_options Options.
  * @property \Phalcon\Cache\BackendInterface $_backendCache Backend cacher.
- * @property StorageInterface $_storage Storage.
+ * @property StorageInterface $_storage Memory.
  * @property string $_defaultGroup Default group.
  */
 abstract class Adapter
@@ -49,7 +51,7 @@ abstract class Adapter
         if (!($this->getBackendCache()) instanceof \Phalcon\Cache\BackendInterface)
             trigger_error("Backend cache adapter isn't specified.");
 
-        $this->setStorage(new Storage());
+        $this->setStorage(new Memory());
         $this->setOptions($options);
     }
 
