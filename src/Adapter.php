@@ -307,6 +307,7 @@ abstract class Adapter
 
         return $groups;
     }
+
     /**
      * @param string|null $from
      * @param string|null $to
@@ -321,10 +322,14 @@ abstract class Adapter
         if (!isset($to) OR $to === '')
             $to = $options['current_language'];
         $cache = $this->getCache($from, $to);
-        if (isset($cache->{$group}))
-            if (is_object($cache->{$group}))
-                return get_object_vars($cache->{$group});
-        return [];
+        if (isset($cache->{$group})) {
+            if (is_object($cache->{$group})) {
+                $group = get_object_vars($cache->{$group});
+                ksort($group);
+                return $group;
+            }
+        }
+        return null;
     }
     /**
      * @return array
