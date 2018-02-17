@@ -6,6 +6,7 @@ namespace TimurFlush\Phalclate;
  * Class Adapter
  * @package TimurFlush
  * @author Timur Flush
+ * @version 1.0.2
  *
  * @property array $_options Options.
  * @property \Phalcon\Cache\BackendInterface $_backendCache Backend cacher.
