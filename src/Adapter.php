@@ -330,7 +330,7 @@ abstract class Adapter
      * @param string|null $from Original language.
      * @param string|null $to Target language.
      * @param string $group The group of translation.
-     * @return array
+     * @return array|null
      */
     public function getGroup(string $from = null, string $to = null, string $group) : array
     {
