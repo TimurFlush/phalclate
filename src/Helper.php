@@ -4,6 +4,12 @@ namespace TimurFlush\Phalclate;
 
 use Phalcon\Translate\Interpolator\AssociativeArray;
 
+/**
+ * Class Helper
+ * @package TimurFlush\Phalclate
+ * @author Timur Flush
+ * @version 
+ */
 class Helper
 {
     /**
@@ -12,6 +18,8 @@ class Helper
     private static $assocArray;
 
     /**
+     * Replaces the expressions in the text.
+     *
      * @param string $text
      * @param array $placeholders
      * @return string
@@ -26,6 +34,8 @@ class Helper
     }
 
     /**
+     * Returns the configuration from the file.
+     *
      * @param string $config
      * @return mixed
      */
