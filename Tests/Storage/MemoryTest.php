@@ -3,10 +3,10 @@
 namespace TimurFlush\Phalclate\Tests;
 
 use PHPUnit\Framework\TestCase;
-use TimurFlush\Phalclate\Storage;
+use TimurFlush\Phalclate\Storage\Memory;
 use TimurFlush\Phalclate\StorageInterface;
 
-class StorageTest extends TestCase
+class MemoryTest extends TestCase
 {
     /**
      * @var StorageInterface
@@ -15,7 +15,7 @@ class StorageTest extends TestCase
 
     public function setUp()
     {
-        $this->storage = new Storage();
+        $this->storage = new Memory();
     }
 
     public function testSaveAndGet()
@@ -27,9 +27,9 @@ class StorageTest extends TestCase
         $chunkStorage = $this->storage->get($expectedKey);
         $fullStorage = $this->storage->get();
 
-        $this->assertTrue($chunkStorage === $expectedValue, 'Storage was not saved.');
+        $this->assertTrue($chunkStorage === $expectedValue, 'Memory was not saved.');
         $this->assertTrue(isset($fullStorage[$expectedKey]) && $fullStorage[$expectedKey] === $expectedValue,
-            'Storage was not saved.'
+            'Memory was not saved.'
         );
     }
 

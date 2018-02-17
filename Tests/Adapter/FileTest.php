@@ -138,6 +138,9 @@ class FileTest extends TestCase
             ]
         ];
 
+        ksort($fake['boys']);
+        ksort($fake['girls']);
+
         $save = $this->adapter->saveCache($this->from, $this->to, $fake);
         $groupBoys = $this->adapter->getGroup($this->from, $this->to, 'boys');
         $groupGirls = $this->adapter->getGroup($this->from, $this->to, 'girls');
