@@ -332,7 +332,7 @@ abstract class Adapter
      * @param string $group The group of translation.
      * @return array|null
      */
-    public function getGroup(string $from = null, string $to = null, string $group) : array
+    public function getGroup(string $from = null, string $to = null, string $group)
     {
         $options = $this->getOptions();
         if (!isset($from) OR $from === '')
