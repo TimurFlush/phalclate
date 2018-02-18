@@ -6,7 +6,7 @@ namespace TimurFlush\Phalclate;
  * Class StorageInterface
  * @package TimurFlush\Phalclate
  * @author Timur Flush
- * @version 1.0.3
+ * @version 1.0.4
  */
 interface StorageInterface
 {

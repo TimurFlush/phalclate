@@ -6,7 +6,7 @@ namespace TimurFlush\Phalclate;
  * Class Operations
  * @package TimurFlush\Phalclate
  * @author Timur Flush
- * @version 1.0.3
+ * @version 1.0.4
  */
 class Operations
 {
