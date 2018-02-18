@@ -228,7 +228,8 @@ abstract class Adapter
         if (!isset($to) OR $to === '')
             $to = $options['current_language'];
 
-        if ($from === $to OR $text === '') return Helper::replacePlaceholders($text, $placeholders);
+        if ($from === $to OR $text === '')
+            return Helper::replacePlaceholders($text, $placeholders);
 
 
         $config = Helper::getConfig('Config');
@@ -238,6 +239,9 @@ abstract class Adapter
                 return Helper::replacePlaceholders($cache->{$this->_defaultGroup}->{$text}, $placeholders);
             }
         }else{
+            if (preg_match('/\//', $group))
+                trigger_error('The group cannot contain a symbol: /');
+
             if (isset($cache->{$group}->{$text})) {
                 return Helper::replacePlaceholders($cache->{$group}->{$text}, $placeholders);
             }
