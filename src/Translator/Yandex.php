@@ -11,7 +11,7 @@ use TimurFlush\Phalclate\TranslatorInterface;
  * Class Yandex
  * @package TimurFlush\Phalclate\Translator
  * @author Timur Flush
- * @version 1.0.3
+ * @version 1.0.6
  */
 class Yandex extends Translator implements TranslatorInterface
 {

@@ -9,7 +9,7 @@ use Phalcon\Cache\Backend\File as BackendCache;
  * Class File
  * @package TimurFlush\Adapter
  * @author Timur Flush
- * @version 1.0.5
+ * @version 1.0.6
  */
 class File extends Adapter
 {

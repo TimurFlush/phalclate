@@ -9,7 +9,7 @@ use Phalcon\Cache\Backend\Redis as BackendCache;
  * Class File
  * @package TimurFlush\Adapter
  * @author Timur Flush
- * @version 1.0.5
+ * @version 1.0.6
  */
 class Redis extends Adapter
 {

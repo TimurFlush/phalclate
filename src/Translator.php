@@ -6,7 +6,7 @@ namespace TimurFlush\Phalclate;
  * Class Translator
  * @package TimurFlush\Phalclate
  * @author Timur Flush
- * @version 1.0.5
+ * @version 1.0.6
  */
 abstract class Translator
 {

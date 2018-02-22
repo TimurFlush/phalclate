@@ -6,7 +6,7 @@ namespace TimurFlush\Phalclate;
  * Interface TranslatorInterface
  * @package TimurFlush\Phalclate
  * @author Timur Flush
- * @version 1.0.5
+ * @version 1.0.6
  */
 interface TranslatorInterface
 {
