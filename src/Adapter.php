@@ -66,9 +66,9 @@ abstract class Adapter
     public function removeGroup(string $from = null, string $to = null, string $group)
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
         return $this->saveCache($from, $to, [
             $group => Operations::DELETE
@@ -87,11 +87,11 @@ abstract class Adapter
     public function removeTranslate(string $from = null, string $to = null, string $group = null, $text)
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
-        if (!isset($group) OR $group === '')
+        if (!isset($group) OR (isset($group) AND $group === ''))
             $group = $this->_defaultGroup;
         if (is_string($text)) {
             return $this->saveCache($from, $to, [
@@ -121,9 +121,9 @@ abstract class Adapter
     public function getCache(string $from = null, string $to = null, $group = null)
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
 
         $filename = $this->getFileName($from, $to);
@@ -159,9 +159,9 @@ abstract class Adapter
     public function saveCache(string $from = null, string $to = null, array $data, $onlyReplace = false, string $group = null)
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
         $filename = $this->getFileName($from, $to);
         $cache = $this->getCache($from, $to);
@@ -222,10 +222,10 @@ abstract class Adapter
     {
         $options = $this->getOptions();
 
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
 
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
 
         if ($from === $to OR $text === '')
@@ -295,9 +295,9 @@ abstract class Adapter
     public final function flushCache(string $from = null, string $to = null) : bool
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
         return $this->_backendCache->delete($this->getFileName($from, $to));
     }
@@ -312,9 +312,9 @@ abstract class Adapter
     public function getGroups(string $from = null, string $to = null) : array
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
 
         $cache = $this->getCache($from, $to);
@@ -339,9 +339,9 @@ abstract class Adapter
     public function getGroup(string $from = null, string $to = null, string $group)
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
         $cache = $this->getCache($from, $to);
         if (isset($cache->{$group})) {
@@ -370,9 +370,9 @@ abstract class Adapter
     private function getFileName(string $from = null, string $to = null) : string
     {
         $options = $this->getOptions();
-        if (!isset($from) OR $from === '')
+        if (!isset($from) OR (isset($from) AND $from === ''))
             $from = $options['default_language'];
-        if (!isset($to) OR $to === '')
+        if (!isset($to) OR (isset($from) AND $to === ''))
             $to = $options['current_language'];
         $config = Helper::getConfig('Config');
         return Helper::replacePlaceholders($config->mask, ['from' => $from, 'to' => $to]);
