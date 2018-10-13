@@ -58,7 +58,7 @@ class Yandex extends Translator implements TranslatorInterface
             $page
         );
 
-        if (preg_match_all("/SID:[[:space:]]*'([^']+)'/U", $page, $parsed, PREG_SET_ORDER) === false)
+        if (!preg_match_all("/SID:[[:space:]]*'([^']+)'/U", $page, $parsed, PREG_SET_ORDER))
             return null;
 
         $explode = explode('.', $parsed[0][1]);
