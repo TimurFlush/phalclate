@@ -261,7 +261,7 @@ abstract class Adapter
                     $translatedText .= $translated;
                     break;
                 }else if ($translated === null){
-                    return '';
+                    continue;
                 }
             }
         }
