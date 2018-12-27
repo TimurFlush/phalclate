@@ -1,26 +1,22 @@
 <?php
-
+/*
+ ***********************************************************************
+ * Copyright (c) 2018 - present, Timur Flush All rights reserved.
+ ***********************************************************************
+ * Author: Timur Flush <flush02@tutanota.com> <https://github.com/timurflush>
+ ***********************************************************************
+*/
 namespace TimurFlush\Phalclate;
 
 use TimurFlush\Phalclate\Storage\Memory;
 
-/**
- * Class Adapter
- * @package TimurFlush
- * @author Timur Flush
- * @version 1.0.6
- *
- * @property array $_options Options.
- * @property \Phalcon\Cache\BackendInterface $_backendCache Backend cacher.
- * @property StorageInterface $_storage Memory.
- * @property string $_defaultGroup Default group.
- */
 abstract class Adapter
 {
     /**
      * @var array
      */
     protected $_options = [];
+
     /**
      * @var \Phalcon\Cache\BackendInterface
      */
