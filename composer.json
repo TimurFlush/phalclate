@@ -1,7 +1,7 @@
 {
   "name": "timur-flush/phalclate",
   "description": "Library for internationalized sites.",
-  "license": "Apache-2.0",
+  "license": "BSD-3-Clause",
   "minimum-stability": "stable",
   "version": "1.0.6",
   "authors": [
