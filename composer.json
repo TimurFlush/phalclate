@@ -2,16 +2,15 @@
   "name": "timur-flush/phalclate",
   "description": "Library for internationalized sites.",
   "license": "BSD-3-Clause",
-  "minimum-stability": "stable",
-  "version": "1.0.6",
   "authors": [
     {
-      "name": "flush02"
+      "name": "flush02",
+      "email": "flush02@tutanota.com"
     }
   ],
   "require": {
     "php": "^7.1.0",
-    "ext-phalcon": "^3.3.0"
+    "ext-phalcon": "^3.4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.5.5",
