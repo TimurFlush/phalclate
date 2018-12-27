@@ -10,7 +10,7 @@ namespace TimurFlush\Phalclate;
 
 use TimurFlush\Phalclate\Storage\Memory;
 
-abstract class Adapter
+abstract class Adapter implements AdapterInterface
 {
     /**
      * @var array
