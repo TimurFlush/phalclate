@@ -12,25 +12,15 @@ use TimurFlush\Phalclate\Adapter;
 use TimurFlush\Phalclate\AdapterInterface;
 
 /**
- * Class SqlDatabase
+ * Class MvcModel
  * @package TimurFlush\Phalclate\Adapter
  */
-class Phql extends Adapter implements AdapterInterface
+class MvcModel extends Adapter implements AdapterInterface
 {
     /**
-     * @var \Phalcon\Mvc\Model\ManagerInterface
+     * @var \Phalcon\Mvc\ModelInterface
      */
-    private $_modelsManager;
-
-    /**
-     * @var \Phalcon\Mvc\Model\MetaDataInterface
-     */
-    private $_modelsMetadata;
-
-    /**
-     * @var string Table name.
-     */
-    private $_tableName;
+    private $_modelClass;
 
     /**
      * SqlDatabase constructor.
@@ -40,42 +30,50 @@ class Phql extends Adapter implements AdapterInterface
      */
     public function __construct(array $options)
     {
-        if (!isset($options['modelsManager'])) {
-            throw new \Exception('The \'modelsManager\' option is not passed.');
-        } elseif ($options['modelsManager'] instanceof \Phalcon\Mvc\Model\ManagerInterface === false) {
-            throw new \Exception(
-                'A passed modelsManager is not implement \Phalcon\Mvc\Model\ManagerInterface interface.'
-            );
+        if (!isset($options['modelClass'])) {
+            throw new \Exception('The \'modelClass\' option is not passed.');
+        } elseif (!class_exists($options['modelClass'])) {
+            throw new \Exception('A passed model class is not exists.');
+        } elseif ($options['modelClass'] instanceof \Phalcon\Mvc\ModelInterface === false) {
+            throw new \Exception('A passed model is not implement \Phalcon\Mvc\ModelInterface interface.');
         }
 
-        if (!isset($options['modelsMetadata'])) {
-            throw new \Exception('The \'modelsMetadata\' option is not passed.');
-        } elseif ($options['modelsMetadata'] instanceof \Phalcon\Mvc\Model\MetaDataInterface === false) {
-            throw new \Exception(
-                'A passed modelsMetadata is not implement \Phalcon\Mvc\Model\MetaDataInterface interface.'
-            );
-        }
-
-        if (!isset($options['tableName'])) {
-            throw new \Exception('The \'tableName\' option is not passed.');
-        } elseif (!is_string($options['tableName']) && !empty($options['tableName'])) {
-            throw new \Exception('A passed table name must be not empty string.');
-        }
-
-        $this->_modelsManager = $options['modelsManager'];
-        $this->_modelsMetadata = $options['modelsMetadata'];
-        $this->_tableName = $options['tableName'];
+        $this->_modelClass = $options['modelClass'];
 
         parent::__construct($options);
     }
 
-    public function getTranslation(string $key, ?string $language, ?string $dialect)
+    /**
+     * Get translation.
+     * @param string $key Key
+     * @param null|string $language Language.
+     * @param null|string $dialect Dialect.
+     * @param bool $firstFetch First fetch mode.
+     * @return string|null
+     */
+    public function getTranslation(string $key, ?string $language, ?string $dialect, bool $firstFetch)
     {
-        $this->_modelsManager->createQuery("SELECT * FROM [] ");
-    }
+        $language = $language ?? $this->getCurrentLanguage();
+        $dialect = $dialect ?? $this->getCurrentDialect();
 
-    public function getTranslations(?string $language, ?string $dialect): array
-    {
+        $translationRecord = $this->_modelClass::findFirst(
+            [
+                '[key] = :key: AND [language] = :language:',
+                'bind' => [
+                    'key' => $key,
+                    'language' => $language,
+                ]
+            ]
+        );
 
+        if ($translationRecord) {
+            if ($translationRecord->dialect === $dialect) {
+                return $translationRecord;
+            } elseif ($translationRecord->dialect !== $dialect && $firstFetch === true) {
+                return $translationRecord->value;
+            }
+        }
+
+        return null;
     }
 }
