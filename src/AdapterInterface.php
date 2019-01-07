@@ -8,80 +8,95 @@
 */
 namespace TimurFlush\Phalclate;
 
+use TimurFlush\Phalclate\Entity\Language;
+
+/**
+ * Interface AdapterInterface
+ * @package TimurFlush\Phalclate
+ */
 interface AdapterInterface
 {
     /**
+     * Set the current language.
+     * @param string $language
+     */
+    public function setCurrentLanguage(string $language);
+
+    /**
      * Get the current language.
-     *
      * @return string
      */
     public function getCurrentLanguage(): string;
 
     /**
+     * Set the current dialect.
+     * @param string $dialect
+     */
+    public function setCurrentDialect(string $dialect);
+
+    /**
      * Get the current dialect.
-     *
      * @return null|string
      */
     public function getCurrentDialect();
 
     /**
      * Set the fail-over translation.
-     *
-     * @param string $tra
-     * @return mixed
+     * @param string $text
      */
-    public function setFailOverTranslation(string $tra);
+    public function setFailOverTranslation(string $text);
 
     /**
      * Get the fail-over translation.
-     *
      * @return string
      */
     public function getFailOverTranslation(): string;
 
     /**
-     * Restore the fail-over translation.
-     *
-     * @return void
+     * Set the list of base languages.
+     * @param Language[] $languages
      */
-    public function restoreFailOverTranslation(): void;
+    public function setBaseLanguages(array $languages);
 
     /**
-     * Register a basic translations.
-     *
-     * @param array $source Source of a basic translations.
-     * @return void
+     * Get the list of base languages.
+     * @return Language[]
      */
-    public function registerBasicTranslations(array $source);
+    public function getBaseLanguages(): array;
 
     /**
-     * Set the list of languages.
-     *
-     * @param array $languages The list of languages.
-     * @return mixed
+     * Get translation.
+     * @param string $key Key
+     * @param null|string $language Language.
+     * @param null|string $dialect Dialect.
+     * @param bool $firstFetch First fetch mode.
+     * @return string|null
      */
-    public function setLanguages(array $languages);
+    public function getTranslation(string $key, ?string $language, ?string $dialect, bool $firstFetch);
 
     /**
-     * Get the list of languages.
-     *
-     * @return array
+     * Set cache service.
+     * @param \Phalcon\Cache\BackendInterface $cache
      */
-    public function getLanguages(): array;
+    public function setCache(\Phalcon\Cache\BackendInterface $cache);
 
     /**
-     * Get the list of translation groups.
-     *
-     * @return mixed
+     * Get cache service.
+     * @return null|\Phalcon\Cache\BackendInterface
      */
-    public function getTranslationGroups();
+    public function getCache();
+
+    /**
+     * Delete a key from cache service.
+     * @param string $key
+     */
+    public function cacheDeleteKey(string $key);
 
     /**
      * Get a translation by a passed key.
-     *
      * @param string $key A key.
-     * @param string $failOverTranslation A fail-over translation.
+     * @param mixed $args Other arguments.
      * @return mixed
      */
-    public function _(string $key, string $failOverTranslation = null);
+    public function _(string $key, ...$args);
 }
