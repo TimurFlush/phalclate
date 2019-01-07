@@ -1,427 +1,258 @@
 <?php
 /*
  ***********************************************************************
- * Copyright (c) 2018 - present, Timur Flush All rights reserved.
+ * Copyright (c) 2018 - present, Timur Flush. All rights reserved.
  ***********************************************************************
  * Author: Timur Flush <flush02@tutanota.com> <https://github.com/timurflush>
  ***********************************************************************
 */
 namespace TimurFlush\Phalclate;
 
-use TimurFlush\Phalclate\Storage\Memory;
+use TimurFlush\Phalclate\Entity\Language;
 
+/**
+ * Class Adapter
+ * @package TimurFlush\Phalclate
+ */
 abstract class Adapter implements AdapterInterface
 {
-    /**
-     * @var array
-     */
-    protected $_options = [];
+    use HelperTrait;
 
     /**
-     * @var \Phalcon\Cache\BackendInterface
+     * @var string Current language.
      */
-    protected $_backendCache;
+    protected $_currentLanguage;
 
     /**
-     * @var StorageInterface
+     * @var string|null Current dialect.
      */
-    protected $_storage;
+    protected $_currentDialect;
 
     /**
-     * @var string
+     * @var string Fail-over translation.
      */
-    protected $_defaultGroup = 'default';
+    protected $_failOverTranslation = '?-?';
+
+    /**
+     * @var Language[] Array of objects of class Language.
+     */
+    protected $_baseLanguages = [];
+
+    /**
+     * @var \Phalcon\Cache\BackendInterface Cache service.
+     */
+    protected $_cache;
 
     /**
      * Adapter constructor.
      * @param array $options
+     * @throws \Exception
      */
-    public function __construct(array $options)
+    public function __construct(array $options = [])
     {
-        if (!isset($options['default_language']))
-            trigger_error("Param 'default_language' isn't specified.");
-        if (!isset($options['current_language']))
-            trigger_error("Param 'current_language' isn't specified.");
-        if (!isset($options['cache_directory']))
-            trigger_error("Param 'cache_directory' isn't specified.");
-        if (!($this->getBackendCache()) instanceof \Phalcon\Cache\BackendInterface)
-            trigger_error("Backend cache adapter isn't specified.");
-
-        $this->setStorage(new Memory());
-        $this->setOptions($options);
-    }
-
-    /**
-     * Deletes the group.
-     *
-     * @param string|null $from Original language.
-     * @param string|null $to Target language.
-     * @param string $group The group of translation.
-     * @return bool
-     */
-    public function removeGroup(string $from = null, string $to = null, string $group)
-    {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-        return $this->saveCache($from, $to, [
-            $group => Operations::DELETE
-        ]);
-    }
-
-    /**
-     * Removes the translation from the group.
-     *
-     * @param string|null $from Original language.
-     * @param string|null $to Target language.
-     * @param string|null $group The group of translation.
-     * @param string|array $text Text or an array of texts to be deleted.
-     * @return bool
-     */
-    public function removeTranslate(string $from = null, string $to = null, string $group = null, $text)
-    {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-        if (!isset($group) OR (isset($group) AND $group === ''))
-            $group = $this->_defaultGroup;
-        if (is_string($text)) {
-            return $this->saveCache($from, $to, [
-                $group => [
-                    $text => Operations::DELETE
-                ]
-            ]);
-        }else if (is_array($text)){
-            $commands = [];
-            foreach($text as $translate)
-                $commands[$translate] = Operations::DELETE;
-            return $this->saveCache($from, $to, [
-                $group => $commands
-            ]);
+        if (isset($options['baseLanguages'])) {
+            $this->setBaseLanguages($options['baseLanguages']);
         }
-        return false;
+        if (isset($options['currentLanguage'])) {
+            $this->setCurrentLanguage($options['currentLanguage']);
+        }
+        if (isset($options['currentDialect'])) {
+            $this->setCurrentDialect($options['currentDialect']);
+        }
+        if (isset($options['failOverTranslation'])) {
+            $this->setFailOverTranslation($options['failOverTranslation']);
+        }
+        if (isset($options['cache'])) {
+            $this->setCache($options['cache']);
+        }
     }
 
     /**
-     * Returns the translation cache.
-     *
-     * @param string|null $from Original language.
-     * @param string|null $to Target language.
-     * @param null $group The group of translation.
-     * @return mixed|null|\stdClass
+     * Set the list of base languages.
+     * @param Language[] $languages
      */
-    public function getCache(string $from = null, string $to = null, $group = null)
+    public function setBaseLanguages(array $languages)
     {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-
-        $filename = $this->getFileName($from, $to);
-        if ($this->getStorage()->exists($filename)){
-            $cache = $this->getStorage()->get($filename) ?? new \stdClass();
-        }else{
-            $cache = $this->getBackendCache()->get($this->getFileName($from, $to)) ?? new \stdClass();
-            $this->getStorage()->save($filename, $cache);
+        foreach ($languages as $language) {
+            $this->_baseLanguages[$language->getLanguage()] = $language;
         }
-        if (is_string($group)){
-            if (isset($cache->{$group}))
-                return $cache->{$group};
-        }else if (is_array($group)){
-            $retCache = new \stdClass();
-            foreach ($group as $group)
-                if (isset($cache->{$group}))
-                    $retCache->{$group} = $cache->{$group};
-            return $retCache;
-        }
-        return $cache;
     }
 
     /**
-     * Saves data to the translation cache.
-     *
-     * @param string|null $from Original language.
-     * @param string|null $to Target language.
-     * @param array $data Data for save.
-     * @param bool $onlyReplace Only replace.
-     * @param string|null $group The group of translation.
-     * @return bool
+     * Get the list of base languages.
+     * @return Language[]
      */
-    public function saveCache(string $from = null, string $to = null, array $data, $onlyReplace = false, string $group = null)
+    public function getBaseLanguages(): array
     {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-        $filename = $this->getFileName($from, $to);
-        $cache = $this->getCache($from, $to);
-        if (is_null($group)){
-            foreach ($data as $group => $translates){
-                if (is_array($translates)) {
-                    foreach ($translates as $original => $translate) {
-                        if ($translate === Operations::DELETE){
-                            if (isset($cache->{$group}->{$original}))
-                                unset($cache->{$group}->{$original});
-                            continue;
-                        }
-                        if ($onlyReplace) {
-                            if (isset($cache->{$group}->{$original}))
-                                $cache->{$group}->{$original} = $translate;
-                        } else {
-                            if (!isset($cache->{$group}))
-                                $cache->{$group} = new \stdClass();
-                            $cache->{$group}->{$original} = $translate;
-                        }
-                    }
-                }else if (is_int($translates) && $translates === Operations::DELETE){
-                    if (isset($cache->{$group}))
-                        unset($cache->{$group});
-                }
-            }
-        }else{
-            foreach ($data as $original => $translate){
-                if ($translate === Operations::DELETE){
-                    if (isset($cache->{$group}->{$original}))
-                        unset($cache->{$group}->{$original});
-                    continue;
-                }
-                if ($onlyReplace){
-                    if (isset($cache->{$group}->{$original}))
-                        $cache->{$group}->{$original} = $translate;
-                }else{
-                    if (!isset($cache->{$group}))
-                        $cache->{$group} = new \stdClass();
-                    $cache->{$group}->{$original} = $translate;
-                }
-            }
-        }
-        $this->getStorage()->save($filename, $cache);
-        return $this->getBackendCache()->save($filename, $cache);
+        return $this->_baseLanguages;
     }
 
     /**
-     * Translates text and writes it to the translation cache.
-     *
-     * @param string $text Text for translate.
-     * @param string|null $from Original language.
-     * @param array $placeholders Placeholders.
-     * @param string|null $group The group of translation.
+     * Set the current language.
+     * @param string $language
+     * @return mixed|void
+     * @throws \Exception A language must be 2 characters long.
+     * @throws \Exception You cannot set the current language until it is not the base language.
+     */
+    public function setCurrentLanguage(string $language)
+    {
+        if (!$this->isValidLanguage($language)) {
+            throw new \Exception('A language must be 2 characters long.');
+        } elseif (!array_key_exists($language, $this->_baseLanguages)) {
+            throw new \Exception('You cannot set the current language until it is not the base language.');
+        }
+
+        $this->_currentLanguage = $language;
+    }
+
+    /**
+     * Get the current language.
      * @return string
      */
-    public function _(string $text, string $from = null, array $placeholders = [], string $group = null)
+    public function getCurrentLanguage(): string
     {
-        $options = $this->getOptions();
+        return $this->_currentLanguage;
+    }
 
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-
-        if ($from === $to OR $text === '')
-            return Helper::replacePlaceholders($text, $placeholders);
-
-
-        $config = Helper::getConfig('Config');
-        $cache = $this->getCache($from, $to);
-        if ($group === null) {
-            if (isset($cache->{$this->_defaultGroup}->{$text})) {
-                return Helper::replacePlaceholders($cache->{$this->_defaultGroup}->{$text}, $placeholders);
-            }
-        }else{
-            if (preg_match('/\//', $group))
-                trigger_error('The group cannot contain a symbol: /');
-
-            if (isset($cache->{$group}->{$text})) {
-                return Helper::replacePlaceholders($cache->{$group}->{$text}, $placeholders);
-            }
+    /**
+     * Set the current dialect.
+     * @param string $dialect
+     * @throws \Exception A dialect is not valid.
+     * @throws \Exception You cannot set the dialect until the language is not set.
+     */
+    public function setCurrentDialect(string $dialect)
+    {
+        if (!$this->isValidDialect($dialect)) {
+            throw new \Exception('A dialect is not valid.');
+        } elseif (empty($this->_currentLanguage)) {
+            throw new \Exception('You cannot set the dialect until the language is not set.');
         }
 
-        $translatedText = '';
-        $map = preg_split('/%(.*?)%/', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-        foreach($map as $chunk){
-            if (isset($placeholders[$chunk])){
-                $translatedText .= '%' . $chunk . '%';
-                continue;
-            }
-            foreach($config->translators as $translatorClass){
-                $translatorObject = new $translatorClass($this->getOptions());
-                $translated = $translatorObject->translate($from, $to, $chunk);
-                if (is_string($translated)){
-                    $translatedText .= $translated;
-                    break;
-                }else if ($translated === null){
-                    continue;
+        if (in_array($dialect, $this->_baseLanguages[$this->_currentLanguage]->getDialects())) {
+            $this->_currentDialect = $dialect;
+        }
+    }
+
+    /**
+     * Get the current dialect.
+     * @return null|string
+     */
+    public function getCurrentDialect()
+    {
+        return $this->_currentDialect;
+    }
+
+    /**
+     * Set the fail-over translation.
+     * @param string $text
+     */
+    public function setFailOverTranslation(string $text)
+    {
+        $this->_failOverTranslation = $text;
+    }
+
+    /**
+     * Get the fail-over translation.
+     * @return string
+     */
+    public function getFailOverTranslation(): string
+    {
+        return $this->_failOverTranslation;
+    }
+
+    /**
+     * Set cache service.
+     * @param \Phalcon\Cache\BackendInterface $cache
+     */
+    public function setCache(\Phalcon\Cache\BackendInterface $cache)
+    {
+        $this->_cache = $cache;
+    }
+
+    /**
+     * Get cache service.
+     * @return null|\Phalcon\Cache\BackendInterface
+     */
+    public function getCache()
+    {
+        return $this->_cache;
+    }
+
+    /**
+     * Delete a key from cache service.
+     * @param string $key
+     */
+    public function cacheDeleteKey(string $key)
+    {
+        if ($this->_cache !== null && $this->_cache->exists($key)) {
+            $this->_cache->delete($key);
+        }
+    }
+
+    /**
+     *
+     * @param string $key Translation key.
+     * @param mixed ...$args Other arguments.
+     * @return string
+     * @throws \Exception Passed the invalid translation key: <key>.
+     */
+    public function _(string $key, ...$args)
+    {
+        if (!$this->isValidTranslationKey($key)) {
+            throw new \Exception('Passed the invalid translation key: ' . $key);
+        }
+
+        $failOverTranslation = null;
+        $placeholders = null;
+        $firstFetch = false;
+
+        $argsNum = sizeof($args);
+
+        if ($argsNum > 0) {
+            for ($i = 0; $i <= $argsNum; $i++) {
+                $arg = &$args[$i];
+                if (is_string($arg)) {
+                    $failOverTranslation = $arg;
+                } elseif (is_array($arg)) {
+                    $placeholders = $arg;
+                } elseif (is_bool($arg)) {
+                    $firstFetch = $arg;
                 }
             }
         }
 
-        if ($translatedText === '')
-            return '';
-
-        if ($group === null){
-            $this->saveCache($from, $to, [
-                $this->_defaultGroup => [
-                    $text => $translatedText
-                ]
-            ]);
-        }else{
-            $this->saveCache($from, $to, [
-                $group => [
-                    $text => $translatedText
-                ]
-            ]);
+        if (empty($key)) {
+            return $failOverTranslation ?? $this->_failOverTranslation;
         }
-        return Helper::replacePlaceholders($translatedText, $placeholders);
-    }
 
-    /**
-     * Clears the cache.
-     *
-     * @param string|null $from Original language.
-     * @param string|null $to Target language.
-     * @return bool
-     */
-    public final function flushCache(string $from = null, string $to = null) : bool
-    {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-        return $this->_backendCache->delete($this->getFileName($from, $to));
-    }
+        if ($this->_cache === null) {
+            $translation = $this->getTranslation($key, $this->_currentLanguage, $this->_currentDialect, $firstFetch);
+        } else {
+            $cacheKeyName = sprintf('%s_%s_%s', $key, $this->_currentLanguage, $this->_currentDialect ?? '-');
+            $cachedTranslation = $this->_cache->get($cacheKeyName);
 
-    /**
-     * Returns a list of all translation groups from the cache.
-     *
-     * @param string $from Original language.
-     * @param string $to The group of translation.
-     * @return array
-     */
-    public function getGroups(string $from = null, string $to = null) : array
-    {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-
-        $cache = $this->getCache($from, $to);
-
-        $groups = [];
-        foreach(get_object_vars($cache) as $group => $translates)
-            $groups[$group] = sizeof(get_object_vars($translates));
-
-        ksort($groups);
-
-        return $groups;
-    }
-
-    /**
-     * Returns the translation group from the cache.
-     *
-     * @param string|null $from Original language.
-     * @param string|null $to Target language.
-     * @param string $group The group of translation.
-     * @return array|null
-     */
-    public function getGroup(string $from = null, string $to = null, string $group)
-    {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-        $cache = $this->getCache($from, $to);
-        if (isset($cache->{$group})) {
-            if (is_object($cache->{$group})) {
-                $group = get_object_vars($cache->{$group});
-                ksort($group);
-                return $group;
+            if ($cachedTranslation === null) {
+                if ($translation = $this->getTranslation(
+                    $key,
+                    $this->_currentLanguage,
+                    $this->_currentDialect,
+                    $firstFetch) !== null
+                ) {
+                    $this->_cache->save($cacheKeyName, $translation);
+                }
+            } else {
+                $translation = &$cachedTranslation;
             }
         }
-        return null;
-    }
 
-    /**
-     * @return array
-     */
-    public function getOptions() : array
-    {
-        return $this->_options;
-    }
-
-    /**
-     * @param string|null $from Original language.
-     * @param string|null $to Target language.
-     * @return string
-     */
-    private function getFileName(string $from = null, string $to = null) : string
-    {
-        $options = $this->getOptions();
-        if (!isset($from) OR (isset($from) AND $from === ''))
-            $from = $options['default_language'];
-        if (!isset($to) OR (isset($from) AND $to === ''))
-            $to = $options['current_language'];
-        $config = Helper::getConfig('Config');
-        return Helper::replacePlaceholders($config->mask, ['from' => $from, 'to' => $to]);
-    }
-
-    /**
-     * @param $lifetime
-     * @return \Phalcon\Cache\Frontend\Json
-     */
-    protected final function getFrontendCache($lifetime = 86400 * 30 * 12 * 1000) : \Phalcon\Cache\Frontend\Json
-    {
-        return new \Phalcon\Cache\Frontend\Json([
-            'lifetime' => $lifetime
-        ]);
-    }
-
-    /**
-     * @param \Phalcon\Cache\BackendInterface $backend
-     */
-    protected final function setBackendCache(\Phalcon\Cache\BackendInterface $backend) : void
-    {
-        $this->_backendCache = $backend;
-    }
-
-    /**
-     * @return \Phalcon\Cache\BackendInterface
-     */
-    protected final function getBackendCache() : \Phalcon\Cache\BackendInterface
-    {
-        return $this->_backendCache;
-    }
-
-    /**
-     * @param StorageInterface $storage
-     */
-    protected final function setStorage(StorageInterface $storage) : void
-    {
-        $this->_storage = $storage;
-    }
-
-    /**
-     * @return StorageInterface
-     */
-    protected final function getStorage() : StorageInterface
-    {
-        return $this->_storage;
-    }
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options) : void
-    {
-        $this->_options = $options;
+        if ($translation === null) {
+            return $failOverTranslation ?? $this->_failOverTranslation;
+        } elseif ($translation === "") {
+            return $translation;
+        } elseif (is_array($placeholders) && !empty($placeholders)) {
+            return str_replace(array_keys($placeholders), array_values($placeholders), $translation);
+        } else {
+            return $translation;
+        }
     }
 }
