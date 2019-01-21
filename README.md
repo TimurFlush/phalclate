@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/TimurFlush/Phalclate.svg?branch=master)](https://travis-ci.org/TimurFlush/Phalclate) [![Coverage Status](https://coveralls.io/repos/github/TimurFlush/phalclate/badge.svg?branch=master)](https://coveralls.io/github/TimurFlush/phalclate?branch=master)
-
 # Phalclate
 
 Phalclate is library developed for internationalization.
