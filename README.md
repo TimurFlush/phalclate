@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/TimurFlush/phalclate.svg?branch=2.x)](https://travis-ci.org/TimurFlush/phalclate)
+[![Coverage Status](https://coveralls.io/repos/github/TimurFlush/Message/badge.svg?branch=2.x)](https://coveralls.io/github/TimurFlush/Message?branch=2.x)
+
 # Phalclate
 
 Phalclate is library developed for internationalization.
@@ -10,6 +13,13 @@ composer require timur-flush/phalclate:^2.0
 ```
 
 Via Pdo\Postgresql adapter:
+
+Table structure:
+
+| id(serial) | key(varchar255) | language(char2) | dialect(varchar255) | value(text) |
+| ------ | ------ | ------ | ------ | ------ |
+| 1 | position| en | GB | centre |
+| 3 | hello | en | [NULL] | Hello, %name%. |
 
 ```php
 use TimurFlush\Phalclate\Adapter\Pdo\Postgresql as PHAdapter;
@@ -55,20 +65,31 @@ $manager = new PHManager(
     $adapter,
     [
         'baseLanguages' => [$ru, $en], //Base languages (Required, Array of PHLanguage objects)
-        'currentLanguage' => 'ru', //Current language (Required, One of the above else will be throwed exception)
-        //'currentDialect' => '', //Current dialect (Optional, Any, however if the dialect is not found then it will not be setted.)
-        //'failOverTranslation' => '' //Fail over translation (Optional)
+        'currentLanguage' => 'en', //Current language (Required, One of the above else will be throwed exception)
+        'currentDialect' => 'US', //Current dialect (Optional, Any, however if the dialect is not found then it will not be setted.)
+        'failOverTranslation' => 'lol' //Fail over translation (Optional)
     ]
 );
 
+
+//Example 1
 echo $manager->getTranslation(
     'hello', 
-    true, //passed boolean argument is first fetch mode. (Optional, Allows the use of translations from other dialects)
+    true, //passed boolean argument is first fetch mode. (Optional, Allows the use of translations from other dialects, by default false)
     ['name' => 'John'] //passed array argument is placeholders. (Optional)
     '' //Passed string argument is custom fail over translation. (Optional)
-); //your translation by key or fail over translation.
-
+); // Hello, John.
 //Please note that the last 3 arguments can be passed in any order.
+
+//Example 2
+echo $manager->getTranslation('notFoundable'); // lol
+
+//Example 3
+echo $manager->getTranslation('position', true); //centre
+
+//Example 4
+echo $manager->getTranslation('notFoundable', 'kek'); //kek
+
 ```
 
 
