@@ -3,7 +3,7 @@
 namespace Adapter\Pdo\Postgresql;
 
 use Codeception\Stub\Expected;
-use TimurFlush\Phalclate\Tests\Unit\Traits\Pdo\Postgresql as PostgresqlTrait;
+use TimurFlush\Phalclate\Tests\unit\Traits\Pdo\Postgresql as PostgresqlTrait;
 
 class connectionTest extends \Codeception\Test\Unit
 {

@@ -18,9 +18,4 @@ Fixtures::add('languages', require FIXTURES_DIR . '/languages.php');
 EnvLoader::create(DATA_DIR)->load();
 
 $loader = new Loader();
-$loader->registerDirs(
-    [
-        FIXTURES_DIR . '/Traits/'
-    ]
-);
 $loader->register();

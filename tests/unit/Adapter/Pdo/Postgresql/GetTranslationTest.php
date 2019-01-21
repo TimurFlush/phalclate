@@ -4,7 +4,7 @@ namespace Adapter\Pdo\Postgresql;
 
 use Codeception\Util\Fixtures;
 use TimurFlush\Phalclate\AdapterInterface;
-use TimurFlush\Phalclate\Tests\Unit\Traits\Pdo\Postgresql as PostgresqlTrait;
+use TimurFlush\Phalclate\Tests\unit\Traits\Pdo\Postgresql as PostgresqlTrait;
 
 class getTranslationTest extends \Codeception\Test\Unit
 {

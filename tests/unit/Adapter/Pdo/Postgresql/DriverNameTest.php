@@ -2,7 +2,7 @@
 
 namespace Adapter\Pdo\Postgresql;
 
-use TimurFlush\Phalclate\Tests\Unit\Traits\Pdo\Postgresql as PostgresqlTrait;
+use TimurFlush\Phalclate\Tests\unit\Traits\Pdo\Postgresql as PostgresqlTrait;
 
 class checkPdoDriverNameTest extends \Codeception\Test\Unit
 {

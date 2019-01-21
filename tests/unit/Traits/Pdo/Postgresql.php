@@ -1,6 +1,6 @@
 <?php
 
-namespace TimurFlush\Phalclate\Tests\Unit\Traits\Pdo;
+namespace TimurFlush\Phalclate\Tests\unit\Traits\Pdo;
 
 use TimurFlush\Phalclate\Adapter\Pdo\Postgresql as PostgresqlAdapter;
 
