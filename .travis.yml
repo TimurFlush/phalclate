@@ -47,8 +47,6 @@ before_install:
   - travis_retry composer require --dev "phalcon/zephir:${ZEPHIR_VERSION}" --ignore-platform-reqs
   - ( bash tests/_ci/install_zephir_parser.sh )
   - ( bash tests/_ci/install_zephir.sh )
-  - bash tests/_ci/install_prereqs_$PHP_MAJOR.sh
-  - bash tests/_ci/install_beanstalk.sh
 
 install:
   - git clone -q --depth=1 https://github.com/phalcon/cphalcon.git -b ${PHALCON_VERSION}
@@ -64,10 +62,10 @@ script:
 after_success:
   - travis_retry php vendor/bin/php-coveralls
 
+services:
+  - postgresql
+
 addons:
-  postgresql: "10"
   apt:
     packages:
       - re2c
-      - postgresql-10
-      - postgresql-client-10
