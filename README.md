@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/TimurFlush/phalclate.svg?branch=2.x)](https://travis-ci.org/TimurFlush/phalclate)
-[![Coverage Status](https://coveralls.io/repos/github/TimurFlush/Message/badge.svg?branch=2.x)](https://coveralls.io/github/TimurFlush/Message?branch=2.x)
+[![Coverage Status](https://coveralls.io/repos/github/TimurFlush/phalclate/badge.svg?branch=2.x)](https://coveralls.io/github/TimurFlush/phalclate?branch=2.x)
 
 # Phalclate
 
