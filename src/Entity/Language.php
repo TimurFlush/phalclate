@@ -10,10 +10,6 @@ namespace TimurFlush\Phalclate\Entity;
 
 use TimurFlush\Phalclate\HelperTrait;
 
-/**
- * Class Language
- * @package TimurFlush\Phalclate\Entity
- */
 class Language
 {
     use HelperTrait;
@@ -26,7 +22,7 @@ class Language
     /**
      * @var Dialect[]
      */
-    private $_dialects;
+    private $_dialects = [];
 
     /**
      * Language constructor.
@@ -44,25 +40,14 @@ class Language
     }
 
     /**
-     *
-     * @param string $language
-     * @return Language
-     * @throws \Exception
-     */
-    public static function create(string $language)
-    {
-        return new self($language);
-    }
-
-    /**
-     * Set dialect.
+     * Add dialect.
      *
      * @param Dialect $dialect
      * @return void
      */
-    public function setDialect(Dialect $dialect): void
+    public function addDialect(Dialect $dialect): void
     {
-        $this->_dialects[] = $dialect;
+        $this->_dialects[$dialect->getDialect()] = $dialect;
     }
 
     /**
@@ -75,13 +60,7 @@ class Language
     public function setDialects(array $dialects): void
     {
         foreach ($dialects as $dialect) {
-            if ($dialect instanceof Dialect === false) {
-                throw new \Exception(
-                    'One from passed dialects is not extends TimurFlush\Phalclate\Entity\Dialect class.'
-                );
-            }
-
-            $this->setDialect($dialect);
+            $this->addDialect($dialect);
         }
     }
 

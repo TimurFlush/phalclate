@@ -1,6 +1,6 @@
 {
   "name": "timur-flush/phalclate",
-  "description": "Library for internationalized sites.",
+  "description": "A library of internationalization.",
   "license": "BSD-3-Clause",
   "authors": [
     {
@@ -13,14 +13,13 @@
   "require": {
     "php": "^7.2.0",
     "ext-phalcon": "^3.4.0",
-
-    "opis/closure": "^3.1.2",
-
-    "nesbot/carbon": "^2.10.0",
     "symfony/polyfill-mbstring": ">=1.10.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.5.1"
+    "vlucas/phpdotenv": "^3.1.0",
+    "codeception/codeception": "^2.5",
+    "squizlabs/php_codesniffer": "^3.0.0",
+    "php-coveralls/php-coveralls": "*"
   },
   "autoload": {
     "psr-4": {
@@ -29,7 +28,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "TimurFlush\\Phalclate\\Tests\\": "Tests/"
+      "TimurFlush\\Phalclate\\Tests\\": "tests/"
     }
   }
 }

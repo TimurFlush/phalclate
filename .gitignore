@@ -1,6 +1,3 @@
 .idea/
 vendor/
-Tests/Cache/*
-sandbox/
-
 composer.lock

@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit
-    colors="true"
-    bootstrap="vendor/autoload.php"
-    beStrictAboutTestsThatDoNotTestAnything="true"
+<phpunit bootstrap="./Tests/bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         verbose="true"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
 >
-    <php>
-        <ini name="error_reporting" value="-1" />
-    </php>
+
     <testsuites>
         <testsuite name="Phalclate Suite">
-            <directory>Tests</directory>
-            <exclude>Tests/Cache</exclude>
+            <directory>./Tests</directory>
+            <exclude>./Tests/Cache</exclude>
         </testsuite>
     </testsuites>
 </phpunit>

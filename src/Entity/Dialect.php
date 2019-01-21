@@ -10,10 +10,6 @@ namespace TimurFlush\Phalclate\Entity;
 
 use TimurFlush\Phalclate\HelperTrait;
 
-/**
- * Class Dialect
- * @package TimurFlush\Phalclate\Entity
- */
 class Dialect
 {
     use HelperTrait;
@@ -36,36 +32,6 @@ class Dialect
         }
 
         $this->_dialect = $dialect;
-    }
-
-    /**
-     * Create a dialect.
-     *
-     * @param string $dialect
-     * @return Dialect
-     * @throws \Exception
-     */
-    public static function create(string $dialect)
-    {
-        return new self($dialect);
-    }
-
-    /**
-     * Create an array of objects of class Dialect.
-     *
-     * @param string[] $dialects
-     * @throws \Exception
-     * @return Dialect[]
-     */
-    public static function createFromArray(array $dialects)
-    {
-        $pool = [];
-
-        foreach ($dialects as $dialect) {
-            $pool[] = self::create($dialect);
-        }
-
-        return $pool;
     }
 
     public function getDialect(): string

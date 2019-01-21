@@ -17,22 +17,22 @@ trait HelperTrait
     /**
      * Is valid a translation key.
      *
-     * @param string $key
-     * @return bool
+     * @param   string $key
+     * @return  bool
      */
-    public function isValidTranslationKey($key)
+    private function isValidTranslationKey($key)
     {
-        return is_string($key) && preg_match('/^[\p{L}._0-9]{0,}$/', $key);
+        return is_string($key) && preg_match('/^[\p{L}._0-9]{1,}$/', $key);
     }
 
     /**
      * Is valid language.
      *
      * @see https://en.wikipedia.org/wiki/ISO_639-1
-     * @param string $language
-     * @return bool
+     * @param   string $language
+     * @return  bool
      */
-    public function isValidLanguage($language)
+    private function isValidLanguage($language)
     {
         return is_string($language) && preg_match('/^[a-z]{2}$/', $language);
     }
@@ -40,10 +40,10 @@ trait HelperTrait
     /**
      * Is valid dialect.
      *
-     * @param string $dialect
-     * @return bool
+     * @param   string $dialect
+     * @return  bool
      */
-    public function isValidDialect($dialect)
+    private function isValidDialect($dialect)
     {
         return is_string($dialect) && preg_match('/^[A-Za-z_-]{1,}$/', $dialect);
     }
