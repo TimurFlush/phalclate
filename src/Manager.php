@@ -29,7 +29,7 @@ class Manager implements ManagerInterface
     /**
      * @var null|string
      */
-    protected $_currentDialect;
+    protected $_currentRegion;
 
     /**
      * @var string
@@ -66,8 +66,8 @@ class Manager implements ManagerInterface
             throw new \Exception('Parameter \'currentLanguage\' is not passed.');
         }
 
-        if (isset($options['currentDialect'])) {
-            $this->setCurrentDialect($options['currentDialect']);
+        if (isset($options['currentRegion'])) {
+            $this->setCurrentRegion($options['currentRegion']);
         }
 
         if (isset($options['failOverTranslation'])) {
@@ -137,33 +137,33 @@ class Manager implements ManagerInterface
     }
 
     /**
-     * Set current dialect.
+     * Set current region.
      *
-     * @param   string      $dialect
-     * @throws  \Exception  A dialect is not valid.
-     * @throws  \Exception  You cannot specify a dialect if it is not defined in the current language.
+     * @param   string      $region
+     * @throws  \Exception  A region is not valid.
+     * @throws  \Exception  You cannot specify a region if it is not defined in the current language.
      */
-    public function setCurrentDialect(string $dialect)
+    public function setCurrentRegion(string $region)
     {
-        if (!$this->isValidDialect($dialect)) {
-            throw new \Exception('Passed dialect is not valid.');
+        if (!$this->isValidRegion($region)) {
+            throw new \Exception('Passed region is not valid.');
         } elseif (empty($this->_currentLanguage)) {
-            throw new \Exception('You cannot specify a dialect until the current language is not set.');
+            throw new \Exception('You cannot specify a region until the current language is not set.');
         }
 
-        if (array_key_exists($dialect, $this->_baseLanguages[$this->_currentLanguage]->getDialects())) {
-            $this->_currentDialect = $dialect;
+        if (array_key_exists($region, $this->_baseLanguages[$this->_currentLanguage]->getRegions())) {
+            $this->_currentRegion = $region;
         }
     }
 
     /**
-     * Get current dialect.
+     * Get current region.
      *
      * @return null|string
      */
-    public function getCurrentDialect()
+    public function getCurrentRegion()
     {
-        return $this->_currentDialect;
+        return $this->_currentRegion;
     }
 
     /**
@@ -237,7 +237,7 @@ class Manager implements ManagerInterface
             $translation = $this->_adapter->getTranslation(
                 $key,
                 $this->_currentLanguage,
-                $this->_currentDialect,
+                $this->_currentRegion,
                 $firstFetchMode
             );
         } else {
@@ -245,7 +245,7 @@ class Manager implements ManagerInterface
                 '%s_%s_%s',
                 $key,
                 $this->_currentLanguage,
-                $this->_currentDialect ?? '-'
+                $this->_currentRegion ?? '-'
             );
 
             $translation = $this->_cache->get($cacheKeyName);
@@ -254,7 +254,7 @@ class Manager implements ManagerInterface
                 if (($translation = $this->_adapter->getTranslation(
                     $key,
                     $this->_currentLanguage,
-                    $this->_currentDialect,
+                    $this->_currentRegion,
                     $firstFetchMode)
                     ) !== null
                 ) {

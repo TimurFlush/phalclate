@@ -1,16 +1,16 @@
 <?php
 
 use TimurFlush\Phalclate\Entity\Language;
-use TimurFlush\Phalclate\Entity\Dialect;
+use TimurFlush\Phalclate\Entity\Region;
 
 try {
     $ru = new Language('ru');
     $en = new Language('en');
 
-    $en->setDialects(
+    $en->setRegions(
         [
-            new Dialect('US'),
-            new Dialect('GB')
+            new Region('US'),
+            new Region('GB')
         ]
     );
 } catch (\Throwable $e) {

@@ -1,7 +1,7 @@
 <?php namespace Entity;
 
 use Codeception\Stub\Expected;
-use TimurFlush\Phalclate\Entity\Dialect;
+use TimurFlush\Phalclate\Entity\Region;
 use TimurFlush\Phalclate\Entity\Language;
 
 class LanguageTest extends \Codeception\Test\Unit
@@ -70,38 +70,38 @@ class LanguageTest extends \Codeception\Test\Unit
         $this->assertEquals('en', strval($language));
     }
 
-    public function testAccessorsForDialectsProperty()
+    public function testAccessorsForRegionsProperty()
     {
-        $this->tester->wantToTest('Accessors for dialects property.');
+        $this->tester->wantToTest('Accessors for regions property.');
 
-        $usDialect = $this->make(
-            Dialect::class,
+        $usRegion = $this->make(
+            Region::class,
             [
-                'getDialect' => Expected::atLeastOnce(function () {
+                'getRegion' => Expected::atLeastOnce(function () {
                     return 'US';
                 })
             ]
         );
-        $gbDialect = $this->make(
-            Dialect::class,
+        $gbRegion = $this->make(
+            Region::class,
             [
-                'getDialect' => Expected::atLeastOnce(function () {
+                'getRegion' => Expected::atLeastOnce(function () {
                     return 'GB';
                 })
             ]
         );
 
         $language = new Language('en');
-        $this->assertEmpty($language->getDialects());
+        $this->assertEmpty($language->getRegions());
 
-        $language->setDialects(
+        $language->setRegions(
             [
-                $usDialect,
-                $gbDialect
+                $usRegion,
+                $gbRegion
             ]
         );
 
-        foreach ($language->getDialects() as $key => $dialect) {
+        foreach ($language->getRegions() as $key => $region) {
             switch ($key) {
                 case 'US':
                     $expected = 'US';
@@ -112,7 +112,7 @@ class LanguageTest extends \Codeception\Test\Unit
                 default:
                     $expected = '0_o';
             }
-            $this->assertEquals($expected, $dialect->getDialect());
+            $this->assertEquals($expected, $region->getRegion());
         }
     }
 }

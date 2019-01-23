@@ -217,10 +217,10 @@ class ManagerTest extends \Codeception\Test\Unit
         ));
     }
 
-    public function testThrowingExceptionWhenPassedDialectIsNotValidInSetterForCurrentDialectProperty()
+    public function testThrowingExceptionWhenPassedRegionIsNotValidInSetterForCurrentRegionProperty()
     {
         $this->tester->wantToTest(
-            'Throwing exception when passed dialect is not valid in setter for current dialect property'
+            'Throwing exception when passed region is not valid in setter for current region property'
         );
 
         $reflector = new ReflectionClass(\TimurFlush\Phalclate\Manager::class);
@@ -230,14 +230,14 @@ class ManagerTest extends \Codeception\Test\Unit
          */
         $adapter = $reflector->newInstanceWithoutConstructor();
 
-        $this->expectExceptionMessage('Passed dialect is not valid.');
-        $adapter->setCurrentDialect('BRAKE_+\/');
+        $this->expectExceptionMessage('Passed region is not valid.');
+        $adapter->setCurrentRegion('BRAKE_+\/');
     }
 
-    public function testThrowingExceptionWhenCurrentLanguageIsNotSetInSetterForCurrentDialectProperty()
+    public function testThrowingExceptionWhenCurrentLanguageIsNotSetInSetterForCurrentRegionProperty()
     {
         $this->tester->wantToTest(
-            'Throwing exception when current language is not set in setter for current dialect property'
+            'Throwing exception when current language is not set in setter for current region property'
         );
 
         $reflector = new ReflectionClass(\TimurFlush\Phalclate\Manager::class);
@@ -247,19 +247,19 @@ class ManagerTest extends \Codeception\Test\Unit
          */
         $adapter = $reflector->newInstanceWithoutConstructor();
 
-        $this->expectExceptionMessage('You cannot specify a dialect until the current language is not set.');
-        $adapter->setCurrentDialect('ru');
+        $this->expectExceptionMessage('You cannot specify a region until the current language is not set.');
+        $adapter->setCurrentRegion('RU');
     }
 
     /**
      * @depends testAccessorsForCurrentLanguageProperty
      * @depends testThrowingExceptionInConstructWhenParameterCurrentLanguageIsNotPassed
-     * @depends testThrowingExceptionWhenPassedDialectIsNotValidInSetterForCurrentDialectProperty
+     * @depends testThrowingExceptionWhenPassedRegionIsNotValidInSetterForCurrentRegionProperty
      */
-    public function testAccessorsForCurrentDialectProperty()
+    public function testAccessorsForCurrentRegionProperty()
     {
         $this->tester->wantToTest(
-            'Accessors for \'_currentDialect\' property.'
+            'Accessors for \'_currentRegion\' property.'
         );
 
         $reflector = new ReflectionClass(\TimurFlush\Phalclate\Manager::class);
@@ -269,22 +269,22 @@ class ManagerTest extends \Codeception\Test\Unit
          */
         $adapter = $reflector->newInstanceWithoutConstructor();
 
-        $this->assertNull($adapter->getCurrentDialect());
+        $this->assertNull($adapter->getCurrentRegion());
 
         $adapter->setBaseLanguages(
             [
                 $this->makeEmpty(\TimurFlush\Phalclate\Entity\Language::class, [
                     'getLanguage' => 'en',
-                    'getDialects' => [
+                    'getRegions' => [
                         'US' => new \stdClass()
                     ]
                 ])
             ]
         );
         $adapter->setCurrentLanguage('en');
-        $adapter->setCurrentDialect('US');
+        $adapter->setCurrentRegion('US');
 
-        $this->assertEquals('US', $adapter->getCurrentDialect());
+        $this->assertEquals('US', $adapter->getCurrentRegion());
     }
 
     /**
@@ -315,11 +315,11 @@ class ManagerTest extends \Codeception\Test\Unit
     }
 
     /**
-     * @depends testAccessorsForCurrentDialectProperty
+     * @depends testAccessorsForCurrentRegionProperty
      */
-    public function testSettingCurrentDialectInConstruct()
+    public function testSettingCurrentRegionInConstruct()
     {
-        $this->tester->wantToTest('Setting current dialect in construct.');
+        $this->tester->wantToTest('Setting current region in construct.');
 
         $adapter = $this->makeEmpty(
             \TimurFlush\Phalclate\AdapterInterface::class,
@@ -334,17 +334,17 @@ class ManagerTest extends \Codeception\Test\Unit
                 'baseLanguages' => [
                     $this->make(\TimurFlush\Phalclate\Entity\Language::class, [
                         'getLanguage' => 'ru',
-                        'getDialects' => [
+                        'getRegions' => [
                             'RU' => new \stdClass()
                         ]
                     ])
                 ],
                 'currentLanguage' => 'ru',
-                'currentDialect' => 'RU'
+                'currentRegion' => 'RU'
             ]
         );
 
-        $this->assertEquals('RU', $manager->getCurrentDialect());
+        $this->assertEquals('RU', $manager->getCurrentRegion());
     }
 
     public function testAccessorsForFailOverTranslationProperty()
@@ -382,13 +382,13 @@ class ManagerTest extends \Codeception\Test\Unit
                 'baseLanguages' => [
                     $this->make(\TimurFlush\Phalclate\Entity\Language::class, [
                         'getLanguage' => 'ru',
-                        'getDialects' => [
+                        'getRegions' => [
                             'RU' => new \stdClass()
                         ]
                     ])
                 ],
                 'currentLanguage' => 'ru',
-                'currentDialect' => 'RU',
+                'currentRegion' => 'RU',
                 'failOverTranslation' => 'Kavoooooo?'
             ]
         );
@@ -436,13 +436,13 @@ class ManagerTest extends \Codeception\Test\Unit
                 'baseLanguages' => [
                     $this->make(\TimurFlush\Phalclate\Entity\Language::class, [
                         'getLanguage' => 'ru',
-                        'getDialects' => [
+                        'getRegions' => [
                             'RU' => new \stdClass()
                         ]
                     ])
                 ],
                 'currentLanguage' => 'ru',
-                'currentDialect' => 'RU',
+                'currentRegion' => 'RU',
                 'cache' => $this->makeEmpty(\Phalcon\Cache\BackendInterface::class),
             ]
         );
@@ -467,7 +467,7 @@ class ManagerTest extends \Codeception\Test\Unit
                 'baseLanguages' => [
                     $this->make(\TimurFlush\Phalclate\Entity\Language::class, [
                         'getLanguage' => 'ru',
-                        'getDialects' => [
+                        'getRegions' => [
                             'RU' => new \stdClass()
                         ]
                     ])
@@ -620,7 +620,7 @@ class ManagerTest extends \Codeception\Test\Unit
                 'getTranslation' => function (
                     string $key,
                     string $language,
-                    ?string $dialect = null,
+                    ?string $region = null,
                     bool $firstFetch = false
                 ) use (&$invoked) {
                     if ($firstFetch) {
@@ -737,7 +737,7 @@ class ManagerTest extends \Codeception\Test\Unit
                 'getTranslation' => function (
                     string $key,
                     string $language,
-                    ?string $dialect = null,
+                    ?string $region = null,
                     bool $firstFetch = false
                 ) use (&$passedCorrectKey) {
                     if ($key === 'someKey') {
@@ -778,7 +778,7 @@ class ManagerTest extends \Codeception\Test\Unit
                 'getTranslation' => function (
                     string $key,
                     string $language,
-                    ?string $dialect = null,
+                    ?string $region = null,
                     bool $firstFetch = false
                 ) use (&$passedCorrectKeyToAdapter) {
                     if ($key === 'AnalToy') {

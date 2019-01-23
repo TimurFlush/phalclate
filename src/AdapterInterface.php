@@ -15,11 +15,11 @@ interface AdapterInterface
      *
      * @param string        $key        Translation key.
      * @param string        $language   Language name.
-     * @param null|string   $dialect    Dialect name.
+     * @param null|string   $region    Region name.
      * @param bool          $firstFetch First fetch mode.
      * @return null|string
      */
-    public function getTranslation(string $key, string $language, ?string $dialect, bool $firstFetch = false);
+    public function getTranslation(string $key, string $language, ?string $region, bool $firstFetch = false);
 
     /**
      * Whether the adapter is ready to work.

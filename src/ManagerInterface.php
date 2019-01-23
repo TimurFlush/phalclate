@@ -50,18 +50,18 @@ interface ManagerInterface
     public function getCurrentLanguage();
 
     /**
-     * Set current dialect.
+     * Set current region.
      *
-     * @param string $dialect
+     * @param string $region
      */
-    public function setCurrentDialect(string $dialect);
+    public function setCurrentRegion(string $region);
 
     /**
-     * Get current dialect.
+     * Get current region.
      *
      * @return null|string
      */
-    public function getCurrentDialect();
+    public function getCurrentRegion();
 
     /**
      * Set fail over translation.

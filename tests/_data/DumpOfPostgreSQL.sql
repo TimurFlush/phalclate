@@ -3,7 +3,7 @@ CREATE TABLE public.translations (
     id serial PRIMARY KEY,
     key character varying(255) NOT NULL,
     language character(2) NOT NULL,
-    dialect character varying(255),
+    region character varying(255),
     value text NOT NULL
 );
 

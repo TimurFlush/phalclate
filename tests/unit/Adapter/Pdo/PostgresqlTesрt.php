@@ -53,7 +53,7 @@ class PostgresqlTesрt extends \Codeception\Test\Unit
 
             $client->setBaseLanguages(Fixtures::get('languages'));
             $client->setCurrentLanguage(getenv('MODULE_CURRENT_LANGUAGE'));
-            $client->setCurrentDialect(getenv('MODULE_CURRENT_DIALECT'));
+            $client->setCurrentRegion(getenv('MODULE_CURRENT_DIALECT'));
             $client->setFailOverTranslation(getenv('MODULE_FAIL_OVER_TRANSLATION'));
 
             return $client;
