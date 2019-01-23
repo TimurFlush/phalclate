@@ -59,7 +59,7 @@ class Postgresql extends Pdo
         return $status;
     }
 
-    public function getTranslation(string $key, string $language, ?string $dialect = null, bool $firstFetch = false)
+    public function getTranslation(string $key, string $language, ?string $region = null, bool $firstFetch = false)
     {
         $query = $this->_pdo
             ->prepare(
@@ -77,7 +77,7 @@ class Postgresql extends Pdo
 
         if (is_array($translations)) {
             foreach ($translations as $translation) {
-                if ($translation['dialect'] === $dialect) {
+                if ($translation['region'] === $region) {
                     return $translation['value'];
                 }
             }

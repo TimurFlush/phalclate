@@ -1,8 +1,8 @@
 <?php namespace Entity;
 
-use TimurFlush\Phalclate\Entity\Dialect;
+use TimurFlush\Phalclate\Entity\Region;
 
-class DialectTest extends \Codeception\Test\Unit
+class RegionTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
@@ -20,7 +20,7 @@ class DialectTest extends \Codeception\Test\Unit
     // tests
     public function testObjectCreatingWithInvalidAndValidCountries()
     {
-        $this->tester->wantToTest('Object creating with invalid and valid dialects');
+        $this->tester->wantToTest('Object creating with invalid and valid regions');
 
         $validMap = [
             'US' => false,
@@ -39,32 +39,32 @@ class DialectTest extends \Codeception\Test\Unit
 
         foreach ($map as $language => $expectException) {
             if ($expectException) {
-                $this->expectExceptionMessage('A passed dialect is not valid.');
+                $this->expectExceptionMessage('A passed region is not valid.');
             }
 
-            (new Dialect($language));
+            (new Region($language));
         }
     }
 
-    public function testGettingDialectViaUsualMethod()
+    public function testGettingRegionViaUsualMethod()
     {
-        $this->tester->wantToTest('Getting dialect via usual method.');
+        $this->tester->wantToTest('Getting region via usual method.');
 
-        $dialect = new Dialect('US');
-        $this->assertEquals('US', $dialect->getDialect());
+        $region = new Region('US');
+        $this->assertEquals('US', $region->getRegion());
 
-        $dialect = new Dialect('GB');
-        $this->assertEquals('GB', $dialect->getDialect());
+        $region = new Region('GB');
+        $this->assertEquals('GB', $region->getRegion());
     }
 
-    public function testGettingDialectViaMagicMethod()
+    public function testGettingRegionViaMagicMethod()
     {
-        $this->tester->wantToTest('Getting dialect via magic method.');
+        $this->tester->wantToTest('Getting region via magic method.');
 
-        $dialect = new Dialect('US');
-        $this->assertEquals('US', strval($dialect));
+        $region = new Region('US');
+        $this->assertEquals('US', strval($region));
 
-        $dialect = new Dialect('GB');
-        $this->assertEquals('GB', strval($dialect));
+        $region = new Region('GB');
+        $this->assertEquals('GB', strval($region));
     }
 }

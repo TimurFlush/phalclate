@@ -5,28 +5,28 @@ return [
         'id' => 1,
         'key' => 'color',
         'language' => 'en',
-        'dialect' => 'US',
+        'region' => 'US',
         'value' => 'color'
     ],
     [
         'id' => 2,
         'key' => 'color',
         'language' => 'en',
-        'dialect' => 'GB',
+        'region' => 'GB',
         'value' => 'colour'
     ],
     [
         'id' => 3,
         'key' => 'position',
         'language' => 'en',
-        'dialect' => 'US',
+        'region' => 'US',
         'value' => 'center'
     ],
     [
         'id' => 4,
         'key' => 'position',
         'language' => 'en',
-        'dialect' => 'GB',
+        'region' => 'GB',
         'value' => 'centre'
     ],
 ];

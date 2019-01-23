@@ -38,13 +38,14 @@ trait HelperTrait
     }
 
     /**
-     * Is valid dialect.
+     * Is valid region.
      *
-     * @param   string $dialect
+     * @see https://tools.ietf.org/html/rfc5646#section-2.2.4
+     * @param   string $region
      * @return  bool
      */
-    private function isValidDialect($dialect)
+    private function isValidRegion($region)
     {
-        return is_string($dialect) && preg_match('/^[A-Za-z_-]{1,}$/', $dialect);
+        return is_string($region) && preg_match('/^([A-Z]{2}|[0-9]{3})$/', $region);
     }
 }

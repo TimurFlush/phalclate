@@ -10,37 +10,37 @@ namespace TimurFlush\Phalclate\Entity;
 
 use TimurFlush\Phalclate\HelperTrait;
 
-class Dialect
+class Region
 {
     use HelperTrait;
 
     /**
      * @var string
      */
-    private $_dialect;
+    private $_region;
 
     /**
-     * Dialect constructor.
+     * Region constructor.
      *
-     * @param string $dialect
-     * @throws \Exception A passed dialect is not valid.
+     * @param string $region
+     * @throws \Exception A passed region is not valid.
      */
-    public function __construct(string $dialect)
+    public function __construct(string $region)
     {
-        if (!$this->isValidDialect($dialect)) {
-            throw new \Exception('A passed dialect is not valid.');
+        if (!$this->isValidRegion($region)) {
+            throw new \Exception('A passed region is not valid.');
         }
 
-        $this->_dialect = $dialect;
+        $this->_region = $region;
     }
 
-    public function getDialect(): string
+    public function getRegion(): string
     {
-        return $this->_dialect;
+        return $this->_region;
     }
 
     public function __toString()
     {
-        return $this->_dialect;
+        return $this->_region;
     }
 }

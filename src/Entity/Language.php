@@ -20,9 +20,9 @@ class Language
     private $_language;
 
     /**
-     * @var Dialect[]
+     * @var Region[]
      */
-    private $_dialects = [];
+    private $_regions = [];
 
     /**
      * Language constructor.
@@ -40,38 +40,38 @@ class Language
     }
 
     /**
-     * Add dialect.
+     * Add region.
      *
-     * @param Dialect $dialect
+     * @param Region $region
      * @return void
      */
-    public function addDialect(Dialect $dialect): void
+    public function addRegion(Region $region): void
     {
-        $this->_dialects[$dialect->getDialect()] = $dialect;
+        $this->_regions[$region->getRegion()] = $region;
     }
 
     /**
-     * Set dialects.
+     * Set regions.
      *
-     * @param array $dialects
-     * @throws \Exception One from passed dialect is not extends TimurFlush\Phalclate\Entity\Dialect class.
+     * @param array $regions
+     * @throws \Exception One from passed region is not extends TimurFlush\Phalclate\Entity\Region class.
      * @return void
      */
-    public function setDialects(array $dialects): void
+    public function setRegions(array $regions): void
     {
-        foreach ($dialects as $dialect) {
-            $this->addDialect($dialect);
+        foreach ($regions as $region) {
+            $this->addRegion($region);
         }
     }
 
     /**
-     * Get dialects.
+     * Get regions.
      *
-     * @return Dialect[]
+     * @return Region[]
      */
-    public function getDialects(): array
+    public function getRegions(): array
     {
-        return $this->_dialects;
+        return $this->_regions;
     }
 
     /**
